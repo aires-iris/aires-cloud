@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: aires-cloud-auth
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${nacos-url}:8001
+      config:
+        server-addr: ${nacos-url}:8001
+        group: DEFAULT_GROUP
+        prefix: aires-cloud-auth
+        file-extension: yaml

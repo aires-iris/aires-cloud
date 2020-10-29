@@ -1,0 +1,77 @@
+server:
+  port: 8301
+
+spring:
+  application:
+    name: aires-cloud-gateway-cloud
+  boot:
+    admin:
+      client:
+        url: http://${aires-cloud-monitor-admin}:8401
+        username: aires
+        password: 5566
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${nacos-url}:8001
+    gateway:
+      routes:
+        - id: aires-cloud-auth
+          uri: lb://aires-cloud-auth
+          predicates:
+            - Path=/auth/**
+          filters:
+            - name: Hystrix
+              args:
+                name: authfallback
+                fallbackUri: forward:/fallback/aires-cloud-auth
+
+        - id: aires-cloud-server-system
+          uri: lb://aires-cloud-server-system
+          predicates:
+            - Path=/system/**
+          filters:
+            - name: Hystrix
+              args:
+                name: systemfallback
+                fallbackUri: forward:/fallback/aires-cloud-server-system
+
+        - id: aires-cloud-server-system-test
+          uri: lb://aires-cloud-server-system-test
+          predicates:
+            - Path=/test/**
+          filters:
+            - name: Hystrix
+              args:
+                name: testfallback
+                fallbackUri: forward:/fallback/aires-cloud-server-system-test
+      default-filters:
+        - StripPrefix=1
+# 全局超时时间
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 3000
+#eureka:
+#  instance:
+#    lease-renewal-interval-in-seconds: 20
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    instance-info-replication-interval-seconds: 30
+#    registry-fetch-interval-seconds: 3
+#    serviceUrl:
+#      defaultZone: http://aires:5566@${aires-cloud-register-eureka}:8001/register/eureka/
+#
+
+management:
+  endpoint:
+    health:
+      show-details: ALWAYS
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway

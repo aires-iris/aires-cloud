@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: aires-cloud-monitor-admin
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${nacos-url}:8001
+      config:
+        server-addr: ${nacos-url}:8001
+        group: DEFAULT_GROUP
+        prefix: aires-cloud-monitor-admin
+        file-extension: yaml

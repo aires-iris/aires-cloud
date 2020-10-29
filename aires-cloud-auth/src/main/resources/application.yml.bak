@@ -1,0 +1,78 @@
+server:
+  port: 8101
+
+spring:
+  boot:
+    admin:
+      client:
+        url: http://${aires-cloud-monitor-admin}:8401
+        username: aires
+        password: 5566
+  application:
+    name: aires-cloud-auth
+  redis:
+    database: 0
+    host: ${redis-url}
+    port: 6379
+    lettuce:
+      pool:
+        min-idle: 8
+        max-idle: 500
+        max-active: 2000
+        max-wait: 10000
+    timeout: 5000
+  datasource:
+    dynamic:
+      hikari:
+        connection-timeout: 30000
+        max-lifetime: 1800000
+        max-pool-size: 15
+        min-idle: 5
+        connection-test-query: select 1 from dual
+        pool-name: AiresHikariCP
+      primary: base
+      datasource:
+        base:
+          username: root
+          password: 5566
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://${mysql-url}:3306/aires-cloud?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2b8
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${nacos-url}:8001
+#eureka:
+#  instance:
+#    lease-renewal-interval-in-seconds: 20
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    instance-info-replication-interval-seconds: 30
+#    registry-fetch-interval-seconds: 3
+#    serviceUrl:
+#      defaultZone: http://aires:5566@${aires-cloud-register-eureka}:8001/register/eureka/
+
+
+mybatis-plus:
+  type-aliases-package: com.aires.cloud.common.entity.system
+  mapper-locations: classpath*:com/aires/cloud/auth/xml/*Mapper.xml
+  configuration:
+    jdbc-type-for-null: null
+  global-config:
+    banner: false
+
+info:
+  app:
+    name: ${spring.application.name}
+    description: "@project.description@"
+    version: "@project.version@"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: ALWAYS

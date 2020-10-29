@@ -1,0 +1,42 @@
+server:
+  port: 8001
+  servlet:
+    context-path: /register
+
+spring:
+  application:
+    name: aires-cloud-register
+  security:
+    user:
+      name: aires
+      password: 5566
+  boot:
+    admin:
+      client:
+        url: http://${aires-cloud-monitor-admin}:8401
+        username: aires
+        password: 5566
+eureka:
+  instance:
+    hostname: ${aires-cloud-register-eureka}
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    instance-info-replication-interval-seconds: 30
+    serviceUrl:
+      # 其他微服务向注册中心注册的时候，需要提供账户密码
+      defaultZone: http://aires:5566@${aires-cloud-register-eureka}:8001/register/eureka/
+info:
+  app:
+    name: ${spring.application.name}
+    description: "@project.description@"
+    version: "@project.version@"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: ALWAYS
